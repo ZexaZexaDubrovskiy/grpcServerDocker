@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+option csharp_namespace = "GrpcServer";
+
+package grpcserver;
+
+import "google/protobuf/empty.proto";
+
+message Data {
+    double Decimal1 = 1;
+    double Decimal2 = 2;
+    double Decimal3 = 3;
+    double Decimal4 = 4;
+    int64 Timestamp = 5;
+}
+
+message Packet {
+    int64 PacketTimestamp = 1;
+    int32 PacketSeqNum = 2;
+    int32 NRecords = 3;
+    repeated Data PacketData = 4;
+}
+
+service DataService {
+    rpc SendPacket(Packet) returns (google.protobuf.Empty);
+}

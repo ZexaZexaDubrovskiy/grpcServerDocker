@@ -1,0 +1,41 @@
+version: '3.8'
+services:
+  grpc_server:
+    build:
+      context: ./src/GrpcServer
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5001"
+    depends_on:
+      - grpc_postgres
+    environment:
+      ASPNETCORE_URLS: http://+:5001
+      ConnectionStrings__DefaultConnection: "Host=grpc_postgres;Port=5432;Database=grpc_db;Username=postgres;Password=postgres"
+    networks:
+      - grpc_network
+
+  grpc_client:
+    build:
+      context: ./src/GrpcClient
+      dockerfile: Dockerfile
+    depends_on:
+      - grpc_server
+    networks:
+      - grpc_network
+
+  grpc_postgres:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: grpc_db
+    volumes:
+      - ./docker/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - grpc_network
+
+networks:
+  grpc_network:
+    driver: bridge
