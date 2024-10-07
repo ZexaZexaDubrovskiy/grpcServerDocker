@@ -85,6 +85,7 @@ services:
       - grpc_server
     networks:
       - grpc_network
+    entrypoint: /bin/sh -c "sleep 15 && dotnet GrpcClient.dll"
 
   grpc_postgres:
     image: postgres:14
